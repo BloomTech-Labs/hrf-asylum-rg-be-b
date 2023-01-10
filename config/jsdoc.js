@@ -2,10 +2,10 @@ module.exports = {
   definition: {
     openapi: '3.0.1',
     info: {
-      title: 'Lambda Labs Starter API',
+      title: 'Human Rights First: Asylum Report Generator API',
       version: '1.0.0',
       description:
-        'A basic API server to act as a starting point for Labs projects',
+        'API for HRF: Report Generator',
       license: {
         name: 'MIT',
         url: 'https://en.wikipedia.org/wiki/MIT_License',
@@ -13,36 +13,14 @@ module.exports = {
     },
     tags: [
       {
-        name: 'status',
-        description: 'Everything about your status',
-      },
-      {
-        name: 'profile',
-        description: 'Operations for profile',
-      },
-      {
-        name: 'data',
-        description: 'Operations for data science service',
-      },
+        name: 'Cases',
+        description: 'Operations for cases',
+      }
     ],
-    externalDocs: {
-      description: 'Data Science scaffold service docs',
-      url: 'https://ds.labsscaffolding.dev/',
-    },
     components: {
-      securitySchemes: {
-        okta: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'Okta idToken JWT',
-        },
-      },
       responses: {
-        UnauthorizedError: {
-          description: 'Access token is missing or invalid',
-        },
         BadRequest: {
-          description: 'Bad request. profile already exists',
+          description: 'Bad request. case already exists',
         },
         NotFound: {
           description: 'Not Found',
