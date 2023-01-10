@@ -4,8 +4,7 @@ module.exports = {
     info: {
       title: 'Human Rights First: Asylum Report Generator API',
       version: '1.0.0',
-      description:
-        'API for HRF: Report Generator',
+      description: 'API for HRF: Report Generator',
       license: {
         name: 'MIT',
         url: 'https://en.wikipedia.org/wiki/MIT_License',
@@ -15,7 +14,7 @@ module.exports = {
       {
         name: 'Cases',
         description: 'Operations for cases',
-      }
+      },
     ],
     components: {
       responses: {

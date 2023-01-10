@@ -20,7 +20,7 @@ const router = express.Router();
  *      properties:
  *        id:
  *          type: uuid
- *          description: This is a unique key for each case. 
+ *          description: This is a unique key for each case.
  *        affirmative case id:
  *          type: string
  *        asylum office:
@@ -28,7 +28,7 @@ const router = express.Router();
  *        citizenship:
  *          type: string
  *          description: This is the citizenship of the person who filed the case.
- *        race or ethnicity: 
+ *        race or ethnicity:
  *          type: string
  *          description: This is the race/ethnicity of the person who filed the case.
  *       case outcome:
