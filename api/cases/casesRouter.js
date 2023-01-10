@@ -119,7 +119,7 @@ router.get('/:id', function (req, res) {
   const id = String(req.params.id);
   Cases.findById(id)
     .then((_case) => {
-      if (profile) {
+      if (_case) {
         res.status(200).json(_case);
       } else {
         res.status(404).json({ error: 'CaseNotFound' });
