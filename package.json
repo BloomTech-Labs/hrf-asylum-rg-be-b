@@ -15,7 +15,8 @@
     "format": "npx prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md)\"",
     "knex": "npx knex --knexfile config/knexfile.js",
     "tests": "npx jest",
-    "coverage": "CI=true npx jest --coverage --detectOpenHandles --forceExit"
+    "coverage": "CI=true npx jest --coverage --detectOpenHandles --forceExit",
+    "update": "npx knex --knexfile config/knexfile.js migrate:rollback && npx knex --knexfile config/knexfile.js migrate:latest && npx knex --knexfile config/knexfile.js seed:run"
   },
   "lint-staged": {
     "api/**/*.js": [
@@ -56,8 +57,10 @@
     "axios": "^0.26.0",
     "cookie-parser": "~1.4.6",
     "cors": "^2.8.5",
+    "csv-parser": "^3.0.0",
     "dotenv": "^16.0.0",
     "express": "~4.17.3",
+    "fs": "^0.0.1-security",
     "helmet": "^5.0.2",
     "http-errors": "~2.0.0",
     "jwks-rsa": "^2.0.5",
