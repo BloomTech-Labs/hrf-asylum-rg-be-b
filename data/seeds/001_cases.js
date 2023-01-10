@@ -7,7 +7,7 @@ const _cases = [];
 const csvFilePath = path.join(__dirname, 'assets/COW2021001887-I589Data.csv');
 
 fs.createReadStream(csvFilePath)
-  .pipe(csv(['affirmative_case_id','asylum_office','citizenship','race_or_ethnicity','case_outcome','completion_date','data_current_as_of']))
+  .pipe(csv())
   .on('data', (data) => _cases.push(data))
   .on('end', () => {
     console.log('CSV file successfully processed');
