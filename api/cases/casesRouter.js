@@ -13,6 +13,32 @@ router.get('/', function (req, res) {
     });
 });
 
+router.post('/', async (req, res) => {
+  const cases = req.body;
+  if (cases) {
+    try {
+      cases.forEach(async (case_) => {
+        const { id } = case_;
+        const caseExists = await Cases.findById(id);
+        if (!caseExists) {
+          await Cases.create(case_).then((case_) =>
+            res
+              .status(200)
+              .json({ message: 'case created', case: case_[0] })
+          );
+        } else {
+          res.status(400).json({ message: 'cases could not be processed' });
+        }
+      });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ message: e.message });
+    }
+  } else {
+    res.status(404).json({ message: 'case missing' });
+  }
+});
+
 router.get('/:id', function (req, res) {
   const id = String(req.params.id);
   Cases.findById(id)

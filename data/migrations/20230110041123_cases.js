@@ -8,8 +8,9 @@ exports.up = (knex) => {
       table.string('citizenship');
       table.string('race_or_ethnicity');
       table.string('case_outcome');
-      table.string('completion_date');
+      table.date('completion_date');
       table.string('data_current_as_of');
+      table.integer('fiscal_year');
       table.timestamps(true, true);
     });
 };

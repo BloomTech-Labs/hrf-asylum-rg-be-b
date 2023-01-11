@@ -18,7 +18,7 @@ const create = async (_case) => {
 
 const update = (id, _case) => {
   console.log(_case);
-  return db('cases').where({ id: id }).first().update(_case).returning('*');
+  return db('cases').where({ id: id }).update(_case).returning('*');
 };
 
 const remove = async (id) => {
