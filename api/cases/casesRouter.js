@@ -17,12 +17,16 @@ router.get('/', function (req, res) {
 router.put('/calculateFiscalYears', function (req, res) {
   Cases.findAll()
     .then((cases) => {
-      cases.forEach(_case => {
-          const date = new Date(_case.completion_date);
-          const fiscalYear = calculateFiscalYear.calculateFiscalYear(date);
-          Cases.update(_case.id, { fiscal_year: fiscalYear })
-              .then((updatedCase) => { console.log(`Case ${updatedCase.id} updated`)})
-              .catch((err) => { console.log(err) });
+      cases.forEach((_case) => {
+        const date = new Date(_case.completion_date);
+        const fiscalYear = calculateFiscalYear.calculateFiscalYear(date);
+        Cases.update(_case.id, { fiscal_year: fiscalYear })
+          .then((updatedCase) => {
+            console.log(`Case ${updatedCase.id} updated`);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       });
     })
     .then(() => {
@@ -36,7 +40,7 @@ router.put('/calculateFiscalYears', function (req, res) {
 
 router.get('/summary', function (req, res) {
   Cases.summary()
-     .then((cases) => {
+    .then((cases) => {
       res.status(200).json(cases);
     })
     .catch((err) => {
@@ -47,7 +51,7 @@ router.get('/summary', function (req, res) {
 
 router.get('/countrySummary', function (req, res) {
   Cases.distinctCountrySummaries()
-     .then((cases) => {
+    .then((cases) => {
       res.status(200).json(cases);
     })
     .catch((err) => {
@@ -58,7 +62,7 @@ router.get('/countrySummary', function (req, res) {
 
 router.get('/total', function (req, res) {
   Cases.totalCases()
-     .then((total) => {
+    .then((total) => {
       res.status(200).json(total);
     })
     .catch((err) => {
@@ -76,9 +80,7 @@ router.post('/', async (req, res) => {
         const caseExists = await Cases.findById(id);
         if (!caseExists) {
           await Cases.create(case_).then((case_) =>
-            res
-              .status(200)
-              .json({ message: 'case created', case: case_[0] })
+            res.status(200).json({ message: 'case created', case: case_[0] })
           );
         } else {
           res.status(400).json({ message: 'cases could not be processed' });

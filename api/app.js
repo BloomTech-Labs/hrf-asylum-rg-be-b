@@ -37,7 +37,7 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use(['/case', '/cases'], casesRouter);
 app.get('/upload', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'upload.html'))
+  res.sendFile(path.join(__dirname, 'public', 'upload.html'));
 });
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

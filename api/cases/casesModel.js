@@ -50,7 +50,9 @@ const totalCasesByCountry = async (country) => {
 };
 
 const totalCasesByCountryAndOutcome = async (country, outcome) => {
-  return await db('cases').where({ citizenship: country, case_outcome: outcome }).count('id');
+  return await db('cases')
+    .where({ citizenship: country, case_outcome: outcome })
+    .count('id');
 };
 
 const totalCasesByOffice = async (office) => {
@@ -66,11 +68,19 @@ const totalCasesByOutcome = async (outcome) => {
 };
 
 const totalCasesByOutcomeAndFiscalYear = async (year, outcome) => {
-  return await db('cases').where({ fiscal_year: year, case_outcome: outcome }).count('id');
+  return await db('cases')
+    .where({ fiscal_year: year, case_outcome: outcome })
+    .count('id');
 };
 
-const totalCasesByOutcomeAndFiscalYearAndOffice = async (year, outcome, office) => {
-  return await db('cases').where({ fiscal_year: year, case_outcome: outcome, asylum_office: office }).count('id');
+const totalCasesByOutcomeAndFiscalYearAndOffice = async (
+  year,
+  outcome,
+  office
+) => {
+  return await db('cases')
+    .where({ fiscal_year: year, case_outcome: outcome, asylum_office: office })
+    .count('id');
 };
 
 /*
@@ -96,34 +106,84 @@ const distinctCountries = async () => {
 const fiscalYearSummary = async (year) => {
   return await {
     totalCases: await totalCasesByFiscalYear(year).then((res) => +res[0].count),
-    granted: await totalCasesByOutcomeAndFiscalYear(year, 'Grant').then((res) => +res[0].count),
-    denied: await totalCasesByOutcomeAndFiscalYear(year, 'Deny/Referral').then((res) => +res[0].count),
-    adminClosed: await totalCasesByOutcomeAndFiscalYear(year, 'Admin Close/Dismissal').then((res) => +res[0].count),
-    closedNacaraGrant: await totalCasesByOutcomeAndFiscalYear(year, 'Admin Close - NACARA Grant').then((res) => +res[0].count),
-    asylumTerminated: await totalCasesByOutcomeAndFiscalYear(year, 'Asylum Terminated').then((res) => +res[0].count),
+    granted: await totalCasesByOutcomeAndFiscalYear(year, 'Grant').then(
+      (res) => +res[0].count
+    ),
+    denied: await totalCasesByOutcomeAndFiscalYear(year, 'Deny/Referral').then(
+      (res) => +res[0].count
+    ),
+    adminClosed: await totalCasesByOutcomeAndFiscalYear(
+      year,
+      'Admin Close/Dismissal'
+    ).then((res) => +res[0].count),
+    closedNacaraGrant: await totalCasesByOutcomeAndFiscalYear(
+      year,
+      'Admin Close - NACARA Grant'
+    ).then((res) => +res[0].count),
+    asylumTerminated: await totalCasesByOutcomeAndFiscalYear(
+      year,
+      'Asylum Terminated'
+    ).then((res) => +res[0].count),
     yearData: await distinctOfficeSummaries(year).then((res) => res),
   };
 };
 
 const fiscalYearOfficeSummary = async (year, office) => {
   return await {
-    totalCases: await totalCasesByOutcomeAndFiscalYearAndOffice(year, 'Grant', office).then((res) => +res[0].count),
-    granted: await totalCasesByOutcomeAndFiscalYearAndOffice(year, 'Grant', office).then((res) => +res[0].count),
-    denied: await totalCasesByOutcomeAndFiscalYearAndOffice(year, 'Deny/Referral', office).then((res) => +res[0].count),
-    adminClosed: await totalCasesByOutcomeAndFiscalYearAndOffice(year, 'Admin Close/Dismissal', office).then((res) => +res[0].count),
-    closedNacaraGrant: await totalCasesByOutcomeAndFiscalYearAndOffice(year, 'Admin Close - NACARA Grant', office).then((res) => +res[0].count),
-    asylumTerminated: await totalCasesByOutcomeAndFiscalYearAndOffice(year, 'Asylum Terminated', office).then((res) => +res[0].count),
+    totalCases: await totalCasesByOutcomeAndFiscalYearAndOffice(
+      year,
+      'Grant',
+      office
+    ).then((res) => +res[0].count),
+    granted: await totalCasesByOutcomeAndFiscalYearAndOffice(
+      year,
+      'Grant',
+      office
+    ).then((res) => +res[0].count),
+    denied: await totalCasesByOutcomeAndFiscalYearAndOffice(
+      year,
+      'Deny/Referral',
+      office
+    ).then((res) => +res[0].count),
+    adminClosed: await totalCasesByOutcomeAndFiscalYearAndOffice(
+      year,
+      'Admin Close/Dismissal',
+      office
+    ).then((res) => +res[0].count),
+    closedNacaraGrant: await totalCasesByOutcomeAndFiscalYearAndOffice(
+      year,
+      'Admin Close - NACARA Grant',
+      office
+    ).then((res) => +res[0].count),
+    asylumTerminated: await totalCasesByOutcomeAndFiscalYearAndOffice(
+      year,
+      'Asylum Terminated',
+      office
+    ).then((res) => +res[0].count),
   };
 };
 
 const countrySummary = async (country) => {
   return await {
     totalCases: await totalCasesByCountry(country).then((res) => +res[0].count),
-    granted: await totalCasesByCountryAndOutcome(country, 'Grant').then((res) => +res[0].count),
-    denied: await totalCasesByCountryAndOutcome(country, 'Deny/Referral').then((res) => +res[0].count),
-    adminClosed: await totalCasesByCountryAndOutcome(country, 'Admin Close/Dismissal').then((res) => +res[0].count),
-    closedNacaraGrant: await totalCasesByCountryAndOutcome(country, 'Admin Close - NACARA Grant').then((res) => +res[0].count),
-    asylumTerminated: await totalCasesByCountryAndOutcome(country, 'Asylum Terminated').then((res) => +res[0].count),
+    granted: await totalCasesByCountryAndOutcome(country, 'Grant').then(
+      (res) => +res[0].count
+    ),
+    denied: await totalCasesByCountryAndOutcome(country, 'Deny/Referral').then(
+      (res) => +res[0].count
+    ),
+    adminClosed: await totalCasesByCountryAndOutcome(
+      country,
+      'Admin Close/Dismissal'
+    ).then((res) => +res[0].count),
+    closedNacaraGrant: await totalCasesByCountryAndOutcome(
+      country,
+      'Admin Close - NACARA Grant'
+    ).then((res) => +res[0].count),
+    asylumTerminated: await totalCasesByCountryAndOutcome(
+      country,
+      'Asylum Terminated'
+    ).then((res) => +res[0].count),
   };
 };
 
@@ -197,10 +257,18 @@ const summary = async () => {
   return await {
     totalCases: await totalCases().then((res) => +res[0].count),
     granted: await totalCasesByOutcome('Grant').then((res) => +res[0].count),
-    denied: await totalCasesByOutcome('Deny/Referral').then((res) => +res[0].count),
-    adminClosed: await totalCasesByOutcome('Admin Close/Dismissal').then((res) => +res[0].count),
-    closedNacaraGrant: await totalCasesByOutcome('Admin Close - NACARA Grant').then((res) => +res[0].count),
-    asylumTerminated: await totalCasesByOutcome('Asylum Terminated').then((res) => +res[0].count),
+    denied: await totalCasesByOutcome('Deny/Referral').then(
+      (res) => +res[0].count
+    ),
+    adminClosed: await totalCasesByOutcome('Admin Close/Dismissal').then(
+      (res) => +res[0].count
+    ),
+    closedNacaraGrant: await totalCasesByOutcome(
+      'Admin Close - NACARA Grant'
+    ).then((res) => +res[0].count),
+    asylumTerminated: await totalCasesByOutcome('Asylum Terminated').then(
+      (res) => +res[0].count
+    ),
     yearResults: await distinctFiscalYearSummaries().then((res) => res),
   };
 };
@@ -213,6 +281,6 @@ module.exports = {
   update,
   summary,
   distinctCountrySummaries,
-  batchCreate, 
-  totalCases
+  batchCreate,
+  totalCases,
 };
