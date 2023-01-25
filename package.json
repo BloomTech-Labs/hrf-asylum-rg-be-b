@@ -1,6 +1,9 @@
 {
   "name": "labs-api-starter",
   "version": "1.0.0",
+  "engine": {
+    "node": "=14.20.1"
+  },
   "private": false,
   "license": "MIT",
   "engines": {
