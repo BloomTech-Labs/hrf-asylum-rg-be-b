@@ -14,7 +14,6 @@ if (process.env.NODE_ENV != 'production' && config_result.error) {
 //###[  Routers ]###
 const indexRouter = require('./index/indexRouter');
 const casesRouter = require('./cases/casesRouter');
-const fiscalYearSummariesRouter = require('./fiscalYearSummaries/fiscalYearSummariesRouter');
 
 const app = express();
 
@@ -37,7 +36,6 @@ app.use(cookieParser());
 // application routes
 app.use('/', indexRouter);
 app.use(['/case', '/cases'], casesRouter);
-app.use(['/fiscalYearSummary', '/fiscalYearSummaries'], fiscalYearSummariesRouter);
 app.get('/upload', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'upload.html'))
 });

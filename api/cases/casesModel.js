@@ -45,6 +45,10 @@ const totalCasesByCountry = async (country) => {
   return await db('cases').where({ citizenship: country }).count('id');
 };
 
+const totalCasesByCountryAndOutcome = async (country, outcome) => {
+  return await db('cases').where({ citizenship: country, case_outcome: outcome }).count('id');
+};
+
 const totalCasesByOffice = async (office) => {
   return await db('cases').where({ asylum_office: office }).count('id');
 };
@@ -77,6 +81,10 @@ const distinctOffices = async () => {
   return await db('cases').distinct('asylum_office').select('asylum_office');
 };
 
+const distinctCountries = async () => {
+  return await db('cases').distinct('citizenship').select('citizenship');
+};
+
 /*
   Summary operations for cases
 */
@@ -101,6 +109,17 @@ const fiscalYearOfficeSummary = async (year, office) => {
     adminClosed: await totalCasesByOutcomeAndFiscalYearAndOffice(year, 'Admin Close/Dismissal', office).then((res) => +res[0].count),
     closedNacaraGrant: await totalCasesByOutcomeAndFiscalYearAndOffice(year, 'Admin Close - NACARA Grant', office).then((res) => +res[0].count),
     asylumTerminated: await totalCasesByOutcomeAndFiscalYearAndOffice(year, 'Asylum Terminated', office).then((res) => +res[0].count),
+  };
+};
+
+const countrySummary = async (country) => {
+  return await {
+    totalCases: await totalCasesByCountry(country).then((res) => +res[0].count),
+    granted: await totalCasesByCountryAndOutcome(country, 'Grant').then((res) => +res[0].count),
+    denied: await totalCasesByCountryAndOutcome(country, 'Deny/Referral').then((res) => +res[0].count),
+    adminClosed: await totalCasesByCountryAndOutcome(country, 'Admin Close/Dismissal').then((res) => +res[0].count),
+    closedNacaraGrant: await totalCasesByCountryAndOutcome(country, 'Admin Close - NACARA Grant').then((res) => +res[0].count),
+    asylumTerminated: await totalCasesByCountryAndOutcome(country, 'Asylum Terminated').then((res) => +res[0].count),
   };
 };
 
@@ -147,6 +166,25 @@ const distinctOfficeSummaries = async (year) => {
   return summaries;
 };
 
+const distinctCountrySummaries = async () => {
+  const countries = await distinctCountries();
+  const summaries = [];
+  for (let i = 0; i < countries.length; i++) {
+    const country = countries[i].citizenship;
+    const summary = await countrySummary(country);
+    summaries.push({
+      citizenship: country,
+      totalCases: summary.totalCases,
+      granted: summary.granted,
+      denied: summary.denied,
+      adminClosed: summary.adminClosed,
+      closedNacaraGrant: summary.closedNacaraGrant,
+      asylumTerminated: summary.asylumTerminated,
+    });
+  }
+  return summaries;
+};
+
 /*
   Main summary operation for cases
 */
@@ -169,5 +207,6 @@ module.exports = {
   findById,
   create,
   update,
-  summary
+  summary,
+  distinctCountrySummaries
 };
