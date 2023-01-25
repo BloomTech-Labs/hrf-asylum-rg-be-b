@@ -56,6 +56,17 @@ router.get('/countrySummary', function (req, res) {
     });
 });
 
+router.get('/total', function (req, res) {
+  Cases.totalCases()
+     .then((total) => {
+      res.status(200).json(total);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: err.message });
+    });
+});
+
 router.post('/', async (req, res) => {
   const cases = req.body;
   if (cases) {

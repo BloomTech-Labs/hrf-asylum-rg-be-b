@@ -24,6 +24,10 @@ const create = async (_case) => {
   return db('cases').insert(_case).returning('*');
 };
 
+const batchCreate = async (_cases) => {
+  return await db.batchInsert('cases', _cases, 1000).returning('*');
+};
+
 const update = (id, _case) => {
   console.log(_case);
   return db('cases').where({ id: id }).update(_case).returning('*');
@@ -208,5 +212,7 @@ module.exports = {
   create,
   update,
   summary,
-  distinctCountrySummaries
+  distinctCountrySummaries,
+  batchCreate, 
+  totalCases
 };
