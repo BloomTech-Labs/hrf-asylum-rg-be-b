@@ -10,7 +10,7 @@ exports.up = (knex) => {
       table.string('case_outcome');
       table.date('completion_date');
       table.string('data_current_as_of');
-      table.string('fiscal_year');
+      table.integer('fiscal_year');
       table.timestamps(true, true);
     });
 };

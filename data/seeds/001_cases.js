@@ -1,6 +1,7 @@
 const csv = require('csv-parser');
 const fs = require('fs');
 const path = require('path');
+const db = require('../../data/db-config');
 
 const _cases = [];
 
@@ -13,10 +14,10 @@ fs.createReadStream(csvFilePath)
     console.log('CSV file successfully processed');
   });
 
-exports.seed = function (knex) {
-  return knex('cases')
+exports.seed = function () {
+  return db('cases')
     .truncate()
     .then(function () {
-      return knex('cases').insert(_cases);
+      return db.batchInsert('cases', _cases, 1000).returning('*');
     });
 };
