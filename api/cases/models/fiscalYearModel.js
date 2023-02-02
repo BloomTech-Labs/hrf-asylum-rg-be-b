@@ -207,5 +207,6 @@ const fiscalYearSummary = async () => {
 
 
 module.exports = {
-    fiscalYearSummary
+    fiscalYearSummary,
+    totalCases
 };

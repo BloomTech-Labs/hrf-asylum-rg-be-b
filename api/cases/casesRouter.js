@@ -1,8 +1,21 @@
 const express = require('express');
-const Cases = require('./models/baseModel');
-const calculateFiscalYear = require('../../helpers/calculateFiscalYear');
-const CasesData = require('./models/fiscalYearModel');
 const router = express.Router();
+
+// Models
+const Cases = require('./models/baseModel');
+const FiscalSummary = require('./models/fiscalYearModel');
+
+// Helpers
+const calculateFiscalYear = require('../../helpers/calculateFiscalYear');
+
+
+/*
+  Cases Routes
+*/
+
+/*
+ GET /cases: Returns an array of all cases
+*/  
 
 router.get('/', function (req, res) {
   Cases.findAll()
@@ -15,51 +28,28 @@ router.get('/', function (req, res) {
     });
 });
 
-router.get('/fiscalYearSummary', function (req, res) {
-  CasesData.fiscalYearSummary()
-    .then((data) => {
-      res.status(200).json(data);
+/*
+  GET /cases/:id: Returns a case with the specified id
+*/
+
+router.get('/:id', function (req, res) {
+  const id = String(req.params.id);
+  Cases.findById(id)
+    .then((_case) => {
+      if (_case) {
+        res.status(200).json(_case);
+      } else {
+        res.status(404).json({ error: 'CaseNotFound' });
+      }
     })
     .catch((err) => {
-      console.log(err);
-      res.status(500).json({ message: err.message });
+      res.status(500).json({ error: err.message });
     });
 });
 
-router.put('/calculateFiscalYears', function (req, res) {
-  Cases.findAll()
-    .then((cases) => {
-      cases.forEach((_case) => {
-        const date = new Date(_case.completion_date);
-        const fiscalYear = calculateFiscalYear.calculateFiscalYear(date).toString();
-        Cases.update(_case.id, { fiscal_year: fiscalYear })
-          .then(() => {
-            console.log(`Case ${_case.id} updated`);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      });
-    })
-    .then(() => {
-      res.status(200).json({ message: 'Cases updated' });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ message: err.message });
-    });
-});
-
-router.get('/total', function (req, res) {
-  Cases.totalCases()
-    .then((total) => {
-      res.status(200).json(total);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ message: err.message });
-    });
-});
+/*
+  POST /cases: Creates a new case
+*/
 
 router.post('/', async (req, res) => {
   const cases = req.body;
@@ -85,78 +75,81 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.get('/:id', function (req, res) {
+/*
+  PUT /cases/:id: Updates a case with the specified id
+*/
+
+router.put('/:id', function (req, res) {
   const id = String(req.params.id);
-  Cases.findById(id)
-    .then((_case) => {
-      if (_case) {
-        res.status(200).json(_case);
-      } else {
-        res.status(404).json({ error: 'CaseNotFound' });
-      }
+  const _case = req.body;
+  if (_case) {
+    Cases.update(id, _case)
+      .then((updatedCase) => {
+        res.status(200).json(updatedCase);
+      })
+      .catch((err) => {
+        res.status(500).json({ error: err.message });
+      });
+  } else {
+    res.status(404).json({ error: 'CaseNotFound' });
+  }
+});
+
+/*
+  GET /cases/total: Returns the total number of cases
+*/
+
+router.get('/total', function (req, res) {
+  FiscalSummary.totalCases()
+    .then((total) => {
+      res.status(200).json(total);
     })
     .catch((err) => {
-      res.status(500).json({ error: err.message });
+      console.log(err);
+      res.status(500).json({ message: err.message });
     });
 });
 
-router.get('/asylum_office/:key', function (req, res) {
-  const key = String(req.params.key).toUpperCase();
-  Cases.findBy({ asylum_office: key })
-    .then((_case) => {
-      if (_case) {
-        res.status(200).json(_case);
-      } else {
-        res.status(404).json({ error: 'CaseNotFound' });
-      }
+/*
+  GET /cases/fiscalSummary: Returns summary of cases by fiscal year
+*/
+
+router.get('/fiscalSummary', function (req, res) {
+  CasesData.fiscalYearSummary()
+    .then((data) => {
+      res.status(200).json(data);
     })
     .catch((err) => {
-      res.status(500).json({ error: err.message });
+      console.log(err);
+      res.status(500).json({ message: err.message });
     });
 });
 
-router.get('/citizenship/:country', function (req, res) {
-  const country = String(req.params.country).toUpperCase();
-  Cases.findBy({ citizenship: country })
-    .then((_case) => {
-      if (_case) {
-        res.status(200).json(_case);
-      } else {
-        res.status(404).json({ error: 'CaseNotFound' });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message });
-    });
-});
+/*
+  PUT /cases/calculateFiscalYears: Calculates fiscal year for each case and updates the database
+*/
 
-router.get('/race_or_ethnicity/:category', function (req, res) {
-  const category = String(req.params.category).toUpperCase();
-  Cases.findBy({ race_or_ethnicity: category })
-    .then((_case) => {
-      if (_case) {
-        res.status(200).json(_case);
-      } else {
-        res.status(404).json({ error: 'CaseNotFound' });
-      }
+router.put('/calculateFiscalYears', function (req, res) {
+  Cases.findAll()
+    .then((cases) => {
+      cases.forEach((_case) => {
+        const date = new Date(_case.completion_date);
+        const fiscalYear = calculateFiscalYear.calculateFiscalYear(date).toString();
+        Cases.update(_case.id, { fiscal_year: fiscalYear })
+          .then(() => {
+            console.log(`Case ${_case.id} updated`);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+    })
+    .then(() => {
+      res.status(200).json({ message: 'Cases updated' });
     })
     .catch((err) => {
-      res.status(500).json({ error: err.message });
-    });
-});
-
-router.get('/case_outcome/:outcome', function (req, res) {
-  const outcome = String(req.params.outcome);
-  Cases.findBy({ case_outcome: outcome })
-    .then((_case) => {
-      if (_case) {
-        res.status(200).json(_case);
-      } else {
-        res.status(404).json({ error: 'CaseNotFound' });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message });
+      console.log(err);
+      res.status(500).json({ message: err.message });
     });
 });
 
