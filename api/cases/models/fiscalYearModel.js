@@ -1,7 +1,7 @@
 const db = require('../../../data/db-config');
 
 /*
-  Building year data object
+  Building yearData object
 */
 
 /*
@@ -75,7 +75,7 @@ const yearData = async (year) => {
 };
 
 /*
-    Build year results object
+    Build yearResults object
 */
 
 /*

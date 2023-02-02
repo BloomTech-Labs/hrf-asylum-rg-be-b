@@ -4,6 +4,7 @@ const router = express.Router();
 // Models
 const Cases = require('./models/baseModel');
 const FiscalSummary = require('./models/fiscalYearModel');
+const CitizenshipSummary = require('./models/citizenshipModel');
 
 // Helpers
 const calculateFiscalYear = require('../../helpers/calculateFiscalYear');
@@ -115,7 +116,22 @@ router.get('/total', function (req, res) {
 */
 
 router.get('/fiscalSummary', function (req, res) {
-  CasesData.fiscalYearSummary()
+  FiscalSummary.fiscalYearSummary()
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: err.message });
+    });
+});
+
+/*
+  GET /cases/citizenshipSummary: Returns summary of cases by citizenship
+*/
+
+router.get('/citizenshipSummary', function (req, res) {
+  CitizenshipSummary.citizenshipSummary()
     .then((data) => {
       res.status(200).json(data);
     })
@@ -132,16 +148,12 @@ router.get('/fiscalSummary', function (req, res) {
 router.put('/calculateFiscalYears', function (req, res) {
   Cases.findAll()
     .then((cases) => {
-      cases.forEach((_case) => {
-        const date = new Date(_case.completion_date);
-        const fiscalYear = calculateFiscalYear.calculateFiscalYear(date).toString();
-        Cases.update(_case.id, { fiscal_year: fiscalYear })
-          .then(() => {
-            console.log(`Case ${_case.id} updated`);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+      cases.forEach(_case => {
+          const date = new Date(_case.completion_date);
+          const fiscalYear = calculateFiscalYear.calculateFiscalYear(date);
+          Cases.update(_case.id, { fiscal_year: fiscalYear })
+              .then((updatedCase) => { console.log(`Case ${updatedCase.id} updated`)})
+              .catch((err) => { console.log(err) });
       });
     })
     .then(() => {
