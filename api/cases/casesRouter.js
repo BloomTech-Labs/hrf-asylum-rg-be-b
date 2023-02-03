@@ -8,6 +8,7 @@ const CitizenshipSummary = require('./models/citizenshipModel');
 
 // Helpers
 const calculateFiscalYear = require('../../helpers/calculateFiscalYear');
+const officeCodeTranslator = require('../../helpers/officeCodeTranslator');
 
 /*
   Cases Routes
@@ -151,6 +152,35 @@ router.put('/calculateFiscalYears', function (req, res) {
         const date = new Date(_case.completion_date);
         const fiscalYear = calculateFiscalYear.calculateFiscalYear(date);
         Cases.update(_case.id, { fiscal_year: fiscalYear })
+          .then((updatedCase) => {
+            console.log(`Case ${updatedCase.id} updated`);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+    })
+    .then(() => {
+      res.status(200).json({ message: 'Cases updated' });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: err.message });
+    });
+});
+
+/*
+  PUT /cases/translateOfficeCodes: Translates office codes for each case and updates the database
+*/
+
+router.put('/translateOfficeCodes', function (req, res) {
+  Cases.findAll()
+    .then((cases) => {
+      cases.forEach((_case) => {
+        let translatedCase = officeCodeTranslator.officeCodeTranslator(_case);
+        Cases.update(_case.id, {
+          asylum_office: translatedCase.asylum_office,
+        })
           .then((updatedCase) => {
             console.log(`Case ${updatedCase.id} updated`);
           })
