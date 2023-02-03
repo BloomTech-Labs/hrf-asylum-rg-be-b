@@ -40,6 +40,7 @@ const percentCasesByCitizenshipAndOutcome = async (citizenship, outcome) => {
 */
 
 const citizenshipResultsObj = async (citizenship) => {
+  const totalCases = await totalCasesByCitizenship(citizenship);
   const percentGranted = await percentCasesByCitizenshipAndOutcome(
     citizenship,
     'Grant'
@@ -66,6 +67,7 @@ const citizenshipResultsObj = async (citizenship) => {
   );
   return {
     citizenship: citizenship,
+    totalCases: parseInt(totalCases[0].count),
     granted: percentGranted,
     totalGranted: parseInt(totalGranted[0].count),
     denied: parseInt(totalDenied[0].count),

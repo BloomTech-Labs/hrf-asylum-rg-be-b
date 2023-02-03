@@ -172,6 +172,7 @@ const fiscalYearDataObj = async (year) => {
     year,
     'Grant'
   );
+  const totalGranted = await totalCasesByFiscalYearAndOutcome(year, 'Grant');
   const percentDenied = await totalCasesByFiscalYearAndOutcome(
     year,
     'Deny/Referral'
@@ -193,6 +194,7 @@ const fiscalYearDataObj = async (year) => {
     fiscal_year: year.toString(),
     totalCases: parseInt(totalCases[0].count),
     granted: percentGranted,
+    totalGranted: parseInt(totalGranted[0].count),
     denied: parseInt(percentDenied[0].count),
     adminClosed: parseInt(percentAdminClosed[0].count),
     asylumTerminated: parseInt(percentAsylumTerminated[0].count),
