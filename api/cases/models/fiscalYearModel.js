@@ -69,24 +69,28 @@ const yearDataObj = async (year, office) => {
     'Grant',
     year
   );
-  const percentDenied = await percentCasesByOfficeAndOutcomeAndFiscalYear(
+  const totalGranted = await totalCasesByOfficeAndOutcomeAndFiscalYear(
+    office,
+    'Grant',
+    year
+  );
+  const totalDenied = await totalCasesByOfficeAndOutcomeAndFiscalYear(
     office,
     'Deny/Referral',
     year
   );
-  const percentAdminClosed = await percentCasesByOfficeAndOutcomeAndFiscalYear(
+  const totalAdminClosed = await totalCasesByOfficeAndOutcomeAndFiscalYear(
     office,
     'Admin Close/Dismissal',
     year
   );
-  const percentAsylumTerminated =
-    await percentCasesByOfficeAndOutcomeAndFiscalYear(
-      office,
-      'Asylum Terminated',
-      year
-    );
-  const percentClosedNacaraGrant =
-    await percentCasesByOfficeAndOutcomeAndFiscalYear(
+  const totalAsylumTerminated = await totalCasesByOfficeAndOutcomeAndFiscalYear(
+    office,
+    'Asylum Terminated',
+    year
+  );
+  const totalClosedNacaraGrant =
+    await totalCasesByOfficeAndOutcomeAndFiscalYear(
       office,
       'Admin Close - NACARA Grant',
       year
@@ -95,10 +99,11 @@ const yearDataObj = async (year, office) => {
     office: office,
     totalCases: parseInt(totalCases[0].count),
     granted: percentGranted,
-    denied: percentDenied,
-    adminClosed: percentAdminClosed,
-    asylumTerminated: percentAsylumTerminated,
-    closedNacaraGrant: percentClosedNacaraGrant,
+    totalGranted: parseInt(totalGranted[0].count),
+    denied: parseInt(totalDenied[0].count),
+    adminClosed: parseInt(totalAdminClosed[0].count),
+    asylumTerminated: parseInt(totalAsylumTerminated[0].count),
+    closedNacaraGrant: parseInt(totalClosedNacaraGrant[0].count),
   };
 };
 
@@ -167,31 +172,31 @@ const fiscalYearDataObj = async (year) => {
     year,
     'Grant'
   );
-  const percentDenied = await percentCasesByFiscalYearAndOutcome(
+  const percentDenied = await totalCasesByFiscalYearAndOutcome(
     year,
     'Deny/Referral'
   );
-  const percentAdminClosed = await percentCasesByFiscalYearAndOutcome(
+  const percentAdminClosed = await totalCasesByFiscalYearAndOutcome(
     year,
     'Admin Close/Dismissal'
   );
-  const percentAsylumTerminated = await percentCasesByFiscalYearAndOutcome(
+  const percentAsylumTerminated = await totalCasesByFiscalYearAndOutcome(
     year,
     'Asylum Terminated'
   );
-  const percentClosedNacaraGrant = await percentCasesByFiscalYearAndOutcome(
+  const percentClosedNacaraGrant = await totalCasesByFiscalYearAndOutcome(
     year,
     'Admin Close - NACARA Grant'
   );
   const data = await yearData(year);
   return {
-    year: year,
+    fiscal_year: year.toString(),
     totalCases: parseInt(totalCases[0].count),
     granted: percentGranted,
-    denied: percentDenied,
-    adminClosed: percentAdminClosed,
-    asylumTerminated: percentAsylumTerminated,
-    closedNacaraGrant: percentClosedNacaraGrant,
+    denied: parseInt(percentDenied[0].count),
+    adminClosed: parseInt(percentAdminClosed[0].count),
+    asylumTerminated: parseInt(percentAsylumTerminated[0].count),
+    closedNacaraGrant: parseInt(percentClosedNacaraGrant[0].count),
     yearData: data,
   };
 };
@@ -232,6 +237,7 @@ const totalCases = async () => {
     3. Percent cases by outcome
 */
 
+// eslint-disable-next-line no-unused-vars
 const percentCasesByOutcome = async (outcome) => {
   const numCases = await totalCases();
   const numCasesByOutcome = await totalCasesByOutcome(outcome);
@@ -244,25 +250,23 @@ const percentCasesByOutcome = async (outcome) => {
 
 const fiscalYearSummary = async () => {
   const numCases = await totalCases();
+  const totalGranted = await totalCasesByOutcome('Grant');
   const percentGranted = await percentCasesByOutcome('Grant');
-  const percentDenied = await percentCasesByOutcome('Deny/Referral');
-  const percentAdminClosed = await percentCasesByOutcome(
-    'Admin Close/Dismissal'
-  );
-  const percentAsylumTerminated = await percentCasesByOutcome(
-    'Asylum Terminated'
-  );
-  const percentClosedNacaraGrant = await percentCasesByOutcome(
+  const totalDenied = await totalCasesByOutcome('Deny/Referral');
+  const totalAdminClosed = await totalCasesByOutcome('Admin Close/Dismissal');
+  const totalAsylumTerminated = await totalCasesByOutcome('Asylum Terminated');
+  const totalClosedNacaraGrant = await totalCasesByOutcome(
     'Admin Close - NACARA Grant'
   );
   const data = await fiscalYearData();
   return {
     totalCases: parseInt(numCases[0].count),
     granted: percentGranted,
-    denied: percentDenied,
-    adminClosed: percentAdminClosed,
-    asylumTerminated: percentAsylumTerminated,
-    closedNacaraGrant: percentClosedNacaraGrant,
+    totalGranted: parseInt(totalGranted[0]['count']),
+    denied: parseInt(totalDenied[0]['count']),
+    adminClosed: parseInt(totalAdminClosed[0]['count']),
+    asylumTerminated: parseInt(totalAsylumTerminated[0]['count']),
+    closedNacaraGrant: parseInt(totalClosedNacaraGrant[0]['count']),
     yearResults: data,
   };
 };
