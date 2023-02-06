@@ -150,44 +150,6 @@ router.get('/citizenshipSummary', function (req, res) {
   PUT /cases/calculateFiscalYears: Calculates fiscal year for each case and updates the database
 */
 
-// router.put('/calculateFiscalYears', function (req, res) {
-//   Cases.findAll()
-//     .then((cases) => {
-//       cases.forEach((_case) => {
-//         const date = new Date(_case.completion_date);
-//         const fiscalYear = calculateFiscalYear.calculateFiscalYear(date);
-//         Cases.update(_case.id, { fiscal_year: fiscalYear })
-//           .then(() => {
-//             console.log(`Case ${_case.id} updated`);
-//           })
-//           .catch((err) => {
-//             console.log(err);
-//           });
-//       });
-//     })
-//     .then(() => {
-//       res.status(200).json({ message: 'Cases updated' });
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       res.status(500).json({ message: err.message });
-//     });
-// });
-
-// router.put('/calculateFiscalYears', function (req, res) {
-//   Cases.findAll()
-//     .then((cases) => {
-//       Cases.batchUpdate(cases);
-//     })
-//     .then(() => {
-//       res.status(200).json({ message: 'Cases updated' });
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       res.status(500).json({ message: err.message });
-//     });
-// });
-
 router.put('/calculateFiscalYears', function (req, res) {
   let years = req.body.years;
 
