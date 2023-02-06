@@ -1,4 +1,5 @@
 const db = require('../../../data/db-config');
+const calculateFiscalYear = require('../../../helpers/calculateFiscalYear');
 
 /*
   Find operations for cases
@@ -33,6 +34,23 @@ const update = (id, _case) => {
   return db('cases').where({ id: id }).update(_case).returning('*');
 };
 
+const batchUpdate = (cases) => {
+  return db.transaction((trx) => {
+    const queries = [];
+    cases.forEach((_case) => {
+      const date = new Date(_case.completion_date);
+      const fiscalYear = calculateFiscalYear.calculateFiscalYear(date);
+      const query = db('cases')
+        .where({ id: _case.id })
+        .update({ fiscal_year: fiscalYear }) //update fiscal_year here
+        .transacting(trx);
+      queries.push(query);
+    });
+
+    Promise.all(queries).then(trx.commit).catch(trx.rollback);
+  });
+};
+
 const remove = async (id) => {
   return await db('cases').where({ id }).del();
 };
@@ -44,5 +62,6 @@ module.exports = {
   create,
   batchCreate,
   update,
+  batchUpdate,
   remove,
 };

@@ -8,8 +8,8 @@ module.exports = {
     migrations: { directory: '../data/migrations' },
     seeds: { directory: '../data/seeds' },
     pool: {
-      min: 2,
-      max: 5,
+      min: 10,
+      max: 50,
     },
   },
 

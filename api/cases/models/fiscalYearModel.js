@@ -209,6 +209,7 @@ const fiscalYearDataObj = async (year) => {
 
 const fiscalYearData = async () => {
   const years = await distinctFiscalYears();
+  console.log(years);
   const fiscalYearData = await Promise.all(
     years.map((year) => fiscalYearDataObj(year.fiscal_year))
   );

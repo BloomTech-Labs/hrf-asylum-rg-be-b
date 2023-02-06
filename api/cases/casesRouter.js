@@ -1,13 +1,18 @@
 const express = require('express');
 const router = express.Router();
 
+const csv = require('csv-parser');
+const fs = require('fs');
+// const path = require('path');
+// const db = require('../../data/db-config');
+
 // Models
 const Cases = require('./models/baseModel');
 const FiscalSummary = require('./models/fiscalYearModel');
 const CitizenshipSummary = require('./models/citizenshipModel');
 
 // Helpers
-const calculateFiscalYear = require('../../helpers/calculateFiscalYear');
+// const calculateFiscalYear = require('../../helpers/calculateFiscalYear');
 const officeCodeTranslator = require('../../helpers/officeCodeTranslator');
 
 /*
@@ -145,20 +150,34 @@ router.get('/citizenshipSummary', function (req, res) {
   PUT /cases/calculateFiscalYears: Calculates fiscal year for each case and updates the database
 */
 
+// router.put('/calculateFiscalYears', function (req, res) {
+//   Cases.findAll()
+//     .then((cases) => {
+//       cases.forEach((_case) => {
+//         const date = new Date(_case.completion_date);
+//         const fiscalYear = calculateFiscalYear.calculateFiscalYear(date);
+//         Cases.update(_case.id, { fiscal_year: fiscalYear })
+//           .then(() => {
+//             console.log(`Case ${_case.id} updated`);
+//           })
+//           .catch((err) => {
+//             console.log(err);
+//           });
+//       });
+//     })
+//     .then(() => {
+//       res.status(200).json({ message: 'Cases updated' });
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).json({ message: err.message });
+//     });
+// });
+
 router.put('/calculateFiscalYears', function (req, res) {
   Cases.findAll()
     .then((cases) => {
-      cases.forEach((_case) => {
-        const date = new Date(_case.completion_date);
-        const fiscalYear = calculateFiscalYear.calculateFiscalYear(date);
-        Cases.update(_case.id, { fiscal_year: fiscalYear })
-          .then((updatedCase) => {
-            console.log(`Case ${updatedCase.id} updated`);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      });
+      Cases.batchUpdate(cases);
     })
     .then(() => {
       res.status(200).json({ message: 'Cases updated' });
@@ -195,6 +214,22 @@ router.put('/translateOfficeCodes', function (req, res) {
     .catch((err) => {
       console.log(err);
       res.status(500).json({ message: err.message });
+    });
+});
+
+router.get('/readCsv', function (req, res) {
+  const _cases = [];
+
+  const csvFilePath = 'data/seeds/assets/COW2021001887-I589Data (1).csv';
+
+  fs.createReadStream(csvFilePath)
+    .pipe(csv())
+    .on('data', (data) => _cases.push(data))
+    .on('end', () => {
+      console.log('CSV file successfully processed');
+      console.log(_cases.length);
+      Cases.batchCreate(_cases);
+      res.status(200).json({ message: 'CSV uploaded' });
     });
 });
 
