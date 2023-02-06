@@ -174,10 +174,28 @@ router.get('/citizenshipSummary', function (req, res) {
 //     });
 // });
 
+// router.put('/calculateFiscalYears', function (req, res) {
+//   Cases.findAll()
+//     .then((cases) => {
+//       Cases.batchUpdate(cases);
+//     })
+//     .then(() => {
+//       res.status(200).json({ message: 'Cases updated' });
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).json({ message: err.message });
+//     });
+// });
+
 router.put('/calculateFiscalYears', function (req, res) {
-  Cases.findAll()
-    .then((cases) => {
-      Cases.batchUpdate(cases);
+  let years = req.body.years;
+
+  years
+    .forEach((year) => {
+      Cases.findByYear(year).then((cases) => {
+        Cases.batchUpdate(cases, year);
+      });
     })
     .then(() => {
       res.status(200).json({ message: 'Cases updated' });
@@ -230,6 +248,18 @@ router.get('/readCsv', function (req, res) {
       console.log(_cases.length);
       Cases.batchCreate(_cases);
       res.status(200).json({ message: 'CSV uploaded' });
+    });
+});
+
+router.get('/findByYear/:year', function (req, res) {
+  console.log(req.params.year);
+  Cases.findByYear(req.params.year)
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: err.message });
     });
 });
 
