@@ -27,12 +27,19 @@ const totalCasesByCitizenship = async (citizenship) => {
 */
 
 const percentCasesByCitizenshipAndOutcome = async (citizenship, outcome) => {
-  const numCases = await totalCasesByCitizenship(citizenship);
-  const numCasesByOutcome = await totalCasesByCitizenshipAndOutcome(
+  const totalGranted = await totalCasesByCitizenshipAndOutcome(
     citizenship,
     outcome
   );
-  return numCasesByOutcome[0].count / numCases[0].count;
+  const totalDenials = await totalCasesByCitizenshipAndOutcome(
+    citizenship,
+    'Deny/Referral'
+  );
+  return (
+    (parseInt(totalGranted[0].count) /
+      (parseInt(totalGranted[0].count) + parseInt(totalDenials[0].count))) *
+    100
+  );
 };
 
 /*
