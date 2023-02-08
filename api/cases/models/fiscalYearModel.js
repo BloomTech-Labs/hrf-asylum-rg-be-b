@@ -242,11 +242,15 @@ const totalCases = async () => {
 
 // eslint-disable-next-line no-unused-vars
 const percentCasesByOutcome = async (outcome) => {
-  const numCases = await totalCases();
   const numCasesByOutcome = await totalCasesByOutcome(outcome);
-  return numCasesByOutcome[0].count / numCases[0].count;
+  const numCasesByOutcomeDenials = await totalCasesByOutcome('Deny/Referral');
+  return (
+    (parseInt(numCasesByOutcome[0].count) /
+      (parseInt(numCasesByOutcome[0].count) +
+        parseInt(numCasesByOutcomeDenials[0].count))) *
+    100
+  );
 };
-
 /*
     4. Fiscal year summary
 */
