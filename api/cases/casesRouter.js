@@ -190,29 +190,6 @@ router.put('/translateOfficeCodes', function (req, res) {
     .catch((err) => {
       res.status(500).json({ message: err.message });
     });
-
-  // Cases.findAll()
-  //   .then((cases) => {
-  //     cases.forEach((_case) => {
-  //       let translatedCase = officeCodeTranslator.officeCodeTranslator(_case);
-  //       Cases.update(_case.id, {
-  //         asylum_office: translatedCase.asylum_office,
-  //       })
-  //         .then(() => {
-  //           console.log(`Case ${_case.id} updated`);
-  //         })
-  //         .catch((err) => {
-  //           console.log(err);
-  //         });
-  //     });
-  //   })
-  //   .then(() => {
-  //     res.status(200).json({ message: 'Cases updated' });
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //     res.status(500).json({ message: err.message });
-  //   });
 });
 
 router.get('/readCsv', function (req, res) {
