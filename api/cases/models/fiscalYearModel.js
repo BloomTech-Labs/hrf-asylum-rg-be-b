@@ -41,13 +41,21 @@ const percentCasesByOfficeAndOutcomeAndFiscalYear = async (
   outcome,
   fiscalYear
 ) => {
-  const totalCases = await totalCasesByOfficeAndFiscalYear(office, fiscalYear);
-  const totalCasesByOutcome = await totalCasesByOfficeAndOutcomeAndFiscalYear(
+  const totalGranted = await totalCasesByOfficeAndOutcomeAndFiscalYear(
     office,
     outcome,
     fiscalYear
   );
-  return totalCasesByOutcome[0].count / totalCases[0].count;
+  const totalDenials = await totalCasesByOfficeAndOutcomeAndFiscalYear(
+    office,
+    'Deny/Referral',
+    fiscalYear
+  );
+  return (
+    (parseInt(totalGranted[0].count) /
+      (parseInt(totalGranted[0].count) + parseInt(totalDenials[0].count))) *
+    100
+  );
 };
 
 /*
@@ -146,12 +154,16 @@ const totalCasesByFiscalYear = async (year) => {
 */
 
 const percentCasesByFiscalYearAndOutcome = async (year, outcome) => {
-  const totalCases = await totalCasesByFiscalYear(year);
-  const totalCasesByOutcome = await totalCasesByFiscalYearAndOutcome(
+  const totalGranted = await totalCasesByFiscalYearAndOutcome(year, outcome);
+  const totalDenials = await totalCasesByFiscalYearAndOutcome(
     year,
-    outcome
+    'Deny/Referral'
   );
-  return totalCasesByOutcome[0].count / totalCases[0].count;
+  return (
+    (parseInt(totalGranted[0].count) /
+      (parseInt(totalGranted[0].count) + parseInt(totalDenials[0].count))) *
+    100
+  );
 };
 
 /*
@@ -209,7 +221,6 @@ const fiscalYearDataObj = async (year) => {
 
 const fiscalYearData = async () => {
   const years = await distinctFiscalYears();
-  console.log(years);
   const fiscalYearData = await Promise.all(
     years.map((year) => fiscalYearDataObj(year.fiscal_year))
   );
