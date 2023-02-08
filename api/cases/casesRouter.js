@@ -156,7 +156,7 @@ router.put('/calculateFiscalYears', function (req, res) {
   years
     .forEach((year) => {
       Cases.findByYear(year).then((cases) => {
-        Cases.batchUpdate(cases, year);
+        Cases.batchUpdateYears(cases, year);
       });
     })
     .then(() => {
@@ -173,28 +173,46 @@ router.put('/calculateFiscalYears', function (req, res) {
 */
 
 router.put('/translateOfficeCodes', function (req, res) {
-  Cases.findAll()
-    .then((cases) => {
-      cases.forEach((_case) => {
-        let translatedCase = officeCodeTranslator.officeCodeTranslator(_case);
-        Cases.update(_case.id, {
-          asylum_office: translatedCase.asylum_office,
-        })
-          .then((updatedCase) => {
-            console.log(`Case ${updatedCase.id} updated`);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+  let offices = req.body.offices;
+
+  offices
+    .forEach((office) => {
+      let fullOfficeName = officeCodeTranslator.officeCodeTranslator({
+        asylum_office: office,
+      });
+      Cases.findByOffice(office).then((cases) => {
+        Cases.batchUpdateOffices(cases, fullOfficeName.asylum_office);
       });
     })
     .then(() => {
-      res.status(200).json({ message: 'Cases updated' });
+      res.status(200).json({ message: 'Cases Updated' });
     })
     .catch((err) => {
-      console.log(err);
       res.status(500).json({ message: err.message });
     });
+
+  // Cases.findAll()
+  //   .then((cases) => {
+  //     cases.forEach((_case) => {
+  //       let translatedCase = officeCodeTranslator.officeCodeTranslator(_case);
+  //       Cases.update(_case.id, {
+  //         asylum_office: translatedCase.asylum_office,
+  //       })
+  //         .then(() => {
+  //           console.log(`Case ${_case.id} updated`);
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //         });
+  //     });
+  //   })
+  //   .then(() => {
+  //     res.status(200).json({ message: 'Cases updated' });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //     res.status(500).json({ message: err.message });
+  //   });
 });
 
 router.get('/readCsv', function (req, res) {
