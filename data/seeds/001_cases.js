@@ -29,7 +29,7 @@ exports.seed = function () {
           console.log('CSV file successfully processed');
           console.log(_cases.length);
         });
-      let slicedCases = _cases.slice(0, 100000);
+      let slicedCases = _cases.slice(0, 50000);
       console.log(slicedCases.length());
       return await db.batchInsert('cases', slicedCases, 5000).returning('*');
     });

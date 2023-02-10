@@ -203,7 +203,7 @@ router.get('/readCsv', function (req, res) {
     .on('end', () => {
       console.log('CSV file successfully processed');
       console.log(_cases.length);
-      let slicedCases = _cases.slice(0, 100000);
+      let slicedCases = _cases.slice(0, 50000);
       console.log(slicedCases.length);
       Cases.batchCreate(slicedCases);
       res.status(200).json({ message: 'CSV uploaded' });
