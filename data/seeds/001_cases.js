@@ -29,6 +29,8 @@ exports.seed = function () {
           console.log('CSV file successfully processed');
           console.log(_cases.length);
         });
-      return await db.batchInsert('cases', _cases, 5000).returning('*');
+      let slicedCases = _cases.slice(0, 100000);
+      console.log(slicedCases.length());
+      return await db.batchInsert('cases', slicedCases, 5000).returning('*');
     });
 };

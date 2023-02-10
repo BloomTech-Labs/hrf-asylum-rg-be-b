@@ -220,7 +220,8 @@ const fiscalYearDataObj = async (year) => {
 */
 
 const fiscalYearData = async () => {
-  const years = await distinctFiscalYears();
+  let years = await distinctFiscalYears();
+  years = years.sort((a, b) => (a.fiscal_year > b.fiscal_year ? 1 : -1));
   const fiscalYearData = await Promise.all(
     years.map((year) => fiscalYearDataObj(year.fiscal_year))
   );
