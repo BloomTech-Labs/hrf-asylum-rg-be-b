@@ -10,14 +10,6 @@ const csvFilePath = path.join(
   'assets/COW2021001887-I589Data (1).csv'
 );
 
-// fs.createReadStream(csvFilePath)
-//   .pipe(csv())
-//   .on('data', (data) => _cases.push(data))
-//   .on('end', () => {
-//     console.log('CSV file successfully processed');
-//     console.log(_cases.length);
-//   });
-
 exports.seed = function () {
   return db('cases')
     .truncate()
@@ -27,10 +19,8 @@ exports.seed = function () {
         .on('data', (data) => _cases.push(data))
         .on('end', () => {
           console.log('CSV file successfully processed');
-          console.log(_cases.length);
         });
       let slicedCases = _cases.slice(0, 50000);
-      console.log(slicedCases.length());
       return await db.batchInsert('cases', slicedCases, 5000).returning('*');
     });
 };

@@ -43,12 +43,10 @@ const batchCreate = async (_cases) => {
 };
 
 const update = (id, _case) => {
-  console.log(_case);
   return db('cases').where({ id: id }).update(_case).returning('*');
 };
 
 const batchUpdateYears = (cases, year) => {
-  console.log(year);
   return db.transaction((trx) => {
     const queries = [];
     cases.forEach((_case) => {
@@ -64,7 +62,6 @@ const batchUpdateYears = (cases, year) => {
 };
 
 const batchUpdateOffices = (cases, office) => {
-  console.log(office);
   return db.transaction((trx) => {
     const queries = [];
     cases.forEach((_case) => {

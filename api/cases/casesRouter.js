@@ -202,16 +202,13 @@ router.get('/readCsv', function (req, res) {
     .on('data', (data) => _cases.push(data))
     .on('end', () => {
       console.log('CSV file successfully processed');
-      console.log(_cases.length);
       let slicedCases = _cases.slice(0, 50000);
-      console.log(slicedCases.length);
       Cases.batchCreate(slicedCases);
       res.status(200).json({ message: 'CSV uploaded' });
     });
 });
 
 router.get('/findByYear/:year', function (req, res) {
-  console.log(req.params.year);
   Cases.findByYear(req.params.year)
     .then((data) => {
       res.status(200).json(data);
