@@ -157,12 +157,6 @@ router.get('/citizenshipSummary', function (req, res) {
 router.put('/calculateFiscalYears', function (req, res) {
   let years = req.body.years;
 
-  // years
-  //   .forEach((year) => {
-  //     Cases.findByYear(year).then((cases) => {
-  //       Cases.batchUpdateYears(cases, year);
-  //     });
-  //   })
   calculateFiscalYears(years, Cases.findByYear, Cases.batchUpdateYears)
     .then(() => {
       res.status(200).json({ message: 'Cases updated' });
