@@ -13,7 +13,11 @@ const CitizenshipSummary = require('./models/citizenshipModel');
 
 // Helpers
 // const calculateFiscalYear = require('../../helpers/calculateFiscalYear');
-const officeCodeTranslator = require('../../helpers/officeCodeTranslator');
+const { officeCodeTranslator } = require('../../helpers/officeCodeTranslator');
+const {
+  translateOfficeCodes,
+  calculateFiscalYears,
+} = require('../../helpers/dataWranglers');
 
 /*
   Cases Routes
@@ -153,12 +157,13 @@ router.get('/citizenshipSummary', function (req, res) {
 router.put('/calculateFiscalYears', function (req, res) {
   let years = req.body.years;
 
-  years
-    .forEach((year) => {
-      Cases.findByYear(year).then((cases) => {
-        Cases.batchUpdateYears(cases, year);
-      });
-    })
+  // years
+  //   .forEach((year) => {
+  //     Cases.findByYear(year).then((cases) => {
+  //       Cases.batchUpdateYears(cases, year);
+  //     });
+  //   })
+  calculateFiscalYears(years, Cases.findByYear, Cases.batchUpdateYears)
     .then(() => {
       res.status(200).json({ message: 'Cases updated' });
     })
@@ -175,15 +180,12 @@ router.put('/calculateFiscalYears', function (req, res) {
 router.put('/translateOfficeCodes', function (req, res) {
   let offices = req.body.offices;
 
-  offices
-    .forEach((office) => {
-      let fullOfficeName = officeCodeTranslator.officeCodeTranslator({
-        asylum_office: office,
-      });
-      Cases.findByOffice(office).then((cases) => {
-        Cases.batchUpdateOffices(cases, fullOfficeName.asylum_office);
-      });
-    })
+  translateOfficeCodes(
+    offices,
+    officeCodeTranslator,
+    Cases.findByOffice,
+    Cases.batchUpdateOffices
+  )
     .then(() => {
       res.status(200).json({ message: 'Cases Updated' });
     })
