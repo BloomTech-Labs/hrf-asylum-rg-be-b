@@ -2,8 +2,8 @@
 
 ## Key Collaborators
 
-[Ashalesh Tilawat](https://github.com/ashtilawat23)
-[Paul St.Germain](https://github.com/paulstgermain) 
+- [Ashalesh Tilawat](https://github.com/ashtilawat23)
+- [Paul St.Germain](https://github.com/paulstgermain) 
 
 ## Tech Stack
 - Node
